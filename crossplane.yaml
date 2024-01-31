@@ -1,0 +1,18 @@
+apiVersion: meta.pkg.crossplane.io/v1alpha1
+kind: Configuration
+metadata:
+  name: configuration-zone
+  annotations:
+    meta.crossplane.io/maintainer: Upbound <support@upbound.io>
+    meta.crossplane.io/source: github.com/opusdavei/configuration-zone
+    meta.crossplane.io/license: Apache-2.0
+spec:
+  crossplane:
+    version: ">=v1.14.1-0"
+  dependsOn:
+    - provider: xpkg.upbound.io/crossplane-contrib/provider-kubernetes
+      # renovate: datasource=github-releases depName=crossplane-contrib/provider-kubernetes
+      version: "v0.11.4"
+    - function: xpkg.upbound.io/upbound/function-patch-and-transform
+      # renovate: datasource=github-releases depName=upbound/function-patch-and-transform
+      version: "v0.2.1"

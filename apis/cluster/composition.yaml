@@ -21,7 +21,6 @@ spec:
           apiVersion: azure.platformref.upbound.io/v1alpha1
           kind: XCluster
           spec:
-            compositeDeletePolicy: Foreground
             parameters:
               id: platform-ref-azure
               region: westus

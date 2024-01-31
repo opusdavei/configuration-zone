@@ -1,0 +1,53 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xclusters.example.upbound.io
+spec:
+  writeConnectionSecretsToNamespace: upbound-system
+  compositeTypeRef:
+    apiVersion: example.upbound.io/v1alpha1
+    kind: XCluster
+  mode: Pipeline
+  pipeline:
+  - step: patch-and-transform
+    functionRef:
+      name: upbound-function-patch-and-transform
+    input:
+      apiVersion: pt.fn.crossplane.io/v1beta1
+      kind: Resources
+      resources:
+      - name: cluster
+        base:
+          apiVersion: azure.platformref.upbound.io/v1alpha1
+          kind: XCluster
+          spec:
+            compositeDeletePolicy: Foreground
+            parameters:
+              id: platform-ref-azure
+              region: westus
+              version: "1.27.3"
+              nodes:
+                count: 1
+                instanceType: Standard_B2s
+              gitops:
+                git:
+                  url: https://github.com/upbound/platform-ref-azure/
+                  ref:
+                    # refs/heads/main
+                    # refs/tags/v0.1.0
+                    # refs/pull/420/head
+                    # refs/merge-requests/1/head
+                    name: refs/heads/main
+        patches:
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: spec.parameters.id
+        - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+          toFieldPath: spec.writeConnectionSecretToRef.namespace
+        - fromFieldPath: spec.parameters.id
+          toFieldPath: spec.writeConnectionSecretToRef.name
+          transforms:
+            type: string
+            string:
+              type: Format
+              fmt: "%s-kubeconfig"
+        

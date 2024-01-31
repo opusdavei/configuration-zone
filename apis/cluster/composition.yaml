@@ -46,7 +46,7 @@ spec:
         - fromFieldPath: spec.parameters.id
           toFieldPath: spec.writeConnectionSecretToRef.name
           transforms:
-            type: string
+          - type: string
             string:
               type: Format
               fmt: "%s-kubeconfig"
